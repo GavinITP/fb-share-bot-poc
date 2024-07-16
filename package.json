@@ -1,0 +1,26 @@
+{
+  "name": "puppetteer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/puppeteer": "^5.4.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "dotenv": "^16.4.5",
+    "js-yaml": "^4.1.0",
+    "puppeteer": "^22.13.0"
+  }
+}
