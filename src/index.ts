@@ -1,68 +1,26 @@
-import puppeteer from "puppeteer";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-
-import {
-  login,
-  clickShareButton,
-  clickGroupButton,
-  selectGroup,
-  clickPostButton,
-} from "./helpers/fbActions";
-import { readYamlFile } from "./helpers/readFile";
+import { run } from "./puppeteer";
 
 dotenv.config();
-main();
 
-async function main() {
-  const browser = await puppeteer.launch({ headless: false });
-  const page = await browser.newPage();
+const app = express();
+const port = process.env.PORT || 8080;
 
-  const EMAIL = process.env.EMAIL || "";
-  const PASSWORD = process.env.PASSWORD || "";
+app.get("/", (_req: Request, res: Response) => {
+  res.status(200).send("The API is running");
+});
 
-  if (!EMAIL || !PASSWORD) {
-    throw new Error("Please provide email and password");
-  }
-
+app.get("/run", async (_req: Request, res: Response) => {
   try {
-    await page.setViewport({
-      width: 1200,
-      height: 800,
-    });
+    await run();
 
-    await login(page, EMAIL, PASSWORD);
-
-    const postUrlsFilePath = "src/configs/postUrls.yaml";
-    const postUrls: string[] = readYamlFile(postUrlsFilePath);
-
-    const groupNamesFilePath = "src/configs/groupNames.yaml";
-    const groupNames: string[] = readYamlFile(groupNamesFilePath);
-
-    for (let postUrl of postUrls) {
-      for (let groupName of groupNames) {
-        await page.goto(postUrl);
-
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        await clickShareButton(page);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        await clickGroupButton(page);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        await selectGroup(page, groupName);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        await clickPostButton(page);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-
-        console.log(`${postUrl} Posted to ${groupName}`);
-      }
-    }
+    res.status(200).send("Script executed successfully");
   } catch (error) {
-    console.log(`Error: ${(error as Error).message}`);
-  } finally {
-    await browser.close();
-    console.log("Browser closed");
+    res.status(500).send(`Error executing script: ${(error as Error).message}`);
   }
-}
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
