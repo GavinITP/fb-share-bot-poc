@@ -41,6 +41,7 @@ async function main() {
     for (let postUrl of postUrls) {
       for (let groupName of groupNames) {
         await page.goto(postUrl);
+
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         await clickShareButton(page);
@@ -55,7 +56,7 @@ async function main() {
         await clickPostButton(page);
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
-        console.log(`${postUrl} Posted to ${groupName} group`);
+        console.log(`${postUrl} Posted to ${groupName}`);
       }
     }
   } catch (error) {
